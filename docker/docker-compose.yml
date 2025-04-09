@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mssql:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "1433:1433"  # Mappe le port 1433 du conteneur vers le port 1433 de l'hôte
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Your$tr0ngP@ssw0rd!
+      - MSSQL_PID=Express
+    networks:
+      custom:
+        ipv4_address: 192.168.100.10  # Adresse IP statique attribuée au conteneur
+
+networks:
+  custom:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
