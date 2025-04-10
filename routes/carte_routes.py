@@ -156,3 +156,51 @@ def upload_carte():
             'etage_id': carte.etage_id
         }
     }), 200
+@carte_bp.route('/<int:idCarte>', methods=['GET'])
+@swag_from({
+    'tags': ['Carte CRUD'],
+    'description': "Récupère la carte correspondant à l'ID fourni et renvoie ses informations (chemin d'accès, coordonnées du centre, zoom et association à un site ou à un étage).",
+    'parameters': [
+        {
+            'name': 'idCarte',
+            'in': 'path',
+            'type': 'integer',
+            'required': True,
+            'description': "Identifiant de la carte à récupérer."
+        }
+    ],
+    'responses': {
+        '200': {
+            'description': "Carte récupérée avec succès.",
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'id': {'type': 'integer', 'example': 1},
+                    'chemin': {'type': 'string', 'example': '/uploads/ma_carte.png'},
+                    'center_lat': {'type': 'number', 'example': 48.8566},
+                    'center_lng': {'type': 'number', 'example': 2.3522},
+                    'zoom': {'type': 'number', 'example': 1.0},
+                    'site_id': {'type': 'integer', 'example': 3},
+                    'etage_id': {'type': 'integer', 'example': None}
+                }
+            }
+        },
+        '404': {
+            'description': "Carte non trouvée."
+        }
+    }
+})
+def get_carte_by_id(idCarte):
+    carte = Carte.query.get(idCarte)
+    if carte is None:
+        return jsonify({'error': 'Carte non trouvée'}), 404
+
+    return jsonify({
+        'id': carte.id,
+        'chemin': carte.chemin,
+        'center_lat': carte.center_lat,
+        'center_lng': carte.center_lng,
+        'zoom': carte.zoom,
+        'site_id': carte.site_id,
+        'etage_id': carte.etage_id
+    }), 200
